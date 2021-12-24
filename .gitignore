@@ -5,3 +5,5 @@ book_review_app/migrations
 
 book_review_api/__pycache__
 book_review_app/__pycache__
+
+pg.py 
