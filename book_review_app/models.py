@@ -8,7 +8,7 @@ from django.utils import timezone
 class AuthorUser(AbstractUser):
     name = models.CharField(max_length=32)
     last_name = models.CharField(max_length=32)
-    middle_name = models.CharField(max_length=32)
+    middle_name = models.CharField(max_length=32, null=True, default=None)
 
     birthday = models.DateField()
     

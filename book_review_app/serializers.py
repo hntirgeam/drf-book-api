@@ -10,14 +10,16 @@ class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.AuthorUser
         fields = ['id', 'name', 'last_name', 'middle_name', 'birthday', 'password', 'username']
+        extra_kwargs = {"middle_name": {"required": False}}
         
     def create(self, validated_data):
+        middle_name = validated_data.get('middle_name', None)
         user = models.AuthorUser.objects.create_user(
             username=validated_data['username'],
             password=validated_data['password'],
             name=validated_data['name'],
             last_name=validated_data['last_name'],
-            middle_name=validated_data['middle_name'],
+            middle_name=middle_name,
             birthday=validated_data['birthday']
         )
 
