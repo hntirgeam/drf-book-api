@@ -32,7 +32,7 @@ class CreateAuthorViewSet(mixins.CreateModelMixin, GenericViewSet):
                           ^^^^^^^^^^^^^^^^
     Registration ViewSet. Allows only POST 
     '''
-    queryset = get_user_model().objects.all()
+    queryset = models.AuthorUser.objects.all()
     serializer_class = serializers.AuthorSerializer
     permission_classes = [AllowAny]
 
