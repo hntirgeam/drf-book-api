@@ -5,15 +5,13 @@ from book_review_app import views
 
 router = routers.DefaultRouter()
 
-router.register(r'api/v1/register', views.CreateAuthorView)
-
+router.register(r'api/v1/register', views.CreateAuthorViewSet)
 router.register(r'api/authors', views.AuthorViewSet) 
 router.register(r'api/books', views.BookViewSet)
 router.register(r'api/genres', views.GenreViewSet)
+router.register(r'api/libraries', views.LibraryViewSet)
 
 
-# Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('api/v1/api-token-auth/', obtain_auth_token, name='api_token_auth'),
     path('api/v1/api-token-deauth/', views.LogoutView.as_view(), name='api_token_deauth')
