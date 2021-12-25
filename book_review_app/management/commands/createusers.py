@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand, CommandParser
-from book_review_app.models import AuthorUser, Book, Comment, Genre
+from book_review_app.models import AuthorUser, Book, Comment, Genre, Library
 import shortuuid
+from rest_framework.authtoken.models import Token
 from faker import Faker
 import random
 from django.utils import timezone
@@ -56,7 +57,7 @@ def get_new_book_data():
     
     book_json = {
         "title": fake.text(max_nb_chars=20),
-        "publication_date": datetime(y, m, d, tzinfo=timezone.get_current_timezone()),  # fake.date_object(tzinfo=timezone.utc) 
+        "publication_date": datetime(y, m, d, tzinfo=timezone.get_current_timezone()),  # fake.date_object(tzinfo=timezone.utc) doesn't work :C
         "year": random.randint(1900, 2021),
     }
     return book_json
@@ -81,6 +82,8 @@ class Command(BaseCommand):
         for _ in tqdm(range(options["users"])):
             profile = get_new_user_data()
             user = AuthorUser.objects.create_user(**profile)
+            Token.objects.create(user=user)
+            Library.objects.create(author=user, name=fake.company(), address=fake.address(), from_hour="9:30", to_hour="21:00")
             
             for _ in range(options["books"]):
                 book = get_new_book_data()
@@ -90,8 +93,8 @@ class Command(BaseCommand):
         
         for book in tqdm(books):
             for _ in range(options["comments"]):
-                authors = AuthorUser.objects.exclude(id=book.author.id).all()
-                comment_creator = random.choice(authors)
+                _authors = AuthorUser.objects.exclude(id=book.author.id).all()
+                comment_creator = random.choice(_authors)
                 Comment.objects.create(author=comment_creator, book=book, text=fake.text())
                 
-        print(F"{options['users']} authors created with each with {options['books']}. Every book now has {options['comments']} from random author (excluding book creator)!")
+        print(F"{options['users']} authors created each with {options['books']}books. Every book now has {options['comments']} comments from random author (excluding book creator)!")
