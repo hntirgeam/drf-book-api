@@ -9,7 +9,7 @@ class AuthorSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     class Meta:
         model = models.AuthorUser
-        fields = ['name', 'last_name', 'middle_name', 'birthday', 'password', 'username']
+        fields = ['id', 'name', 'last_name', 'middle_name', 'birthday', 'password', 'username']
         
     def create(self, validated_data):
         user = models.AuthorUser.objects.create_user(
@@ -27,12 +27,30 @@ class AuthorSerializer(serializers.ModelSerializer):
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Genre
-        fields = ['id', 'name']
+        fields = ['id', 'name']      
+            
+        
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.SerializerMethodField()
+    class Meta:
+        model = models.Comment
+        fields = ['id', 'author', 'book', 'text', 'creation_date']
+        
+        
+    def create(self, validated_data):
+        author = self.context["request"].user
+        comment = models.Comment.objects.create(author=author, **validated_data)
+        return comment
+    
+    def get_author(self, obj):
+        return F"{obj.author.last_name} {obj.author.name} {obj.author.middle_name}"
+    
 
 class BookSerializer(serializers.ModelSerializer):
+    comments = CommentSerializer(many=True)
     class Meta:
         model = models.Book
-        fields = ['id', 'title', 'year', 'author', 'genre', 'publication_date']
+        fields = ['id', 'title', 'year', 'author', 'genre', 'publication_date', 'comments']
             
     
     def validate_year(self, year):
@@ -40,17 +58,18 @@ class BookSerializer(serializers.ModelSerializer):
             return year
         else:
             raise ValidationError("Incorrect year")
-        
-            
-        
-class CommentSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = models.Comment
-        fields = ['author', 'book']
 
-class LibrarySerializer(serializers.HyperlinkedModelSerializer):
+class LibrarySerializer(serializers.ModelSerializer):
+    author = serializers.SerializerMethodField()
     class Meta:
         model = models.Library
-        fields = ['name', 'address', 'latitude', 'longitude', 'from_hour', 'to_hour']
+        fields = ['id','author', 'name', 'address', 'latitude', 'longitude', 'from_hour', 'to_hour']
         
+    def create(self, validated_data):
+        author = self.context["request"].user
+        library = models.Library.objects.create(author=author, **validated_data)
+        return library
+        
+    def get_author(self, obj):
+        return F"{obj.author.last_name} {obj.author.name} {obj.author.middle_name}"
         
