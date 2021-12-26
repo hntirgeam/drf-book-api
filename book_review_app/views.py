@@ -9,8 +9,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from book_review_app import models, serializers
-from book_review_app.permissions import (IsAdminOrReadOnly, IsAuthorOrReadOnly,
-                                         IsOwnProfileOrReadOnly)
+from book_review_app.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly, IsOwnProfileOrReadOnly
 
 
 class LogoutView(APIView):
@@ -29,7 +28,6 @@ class LogoutView(APIView):
 
 class CreateAuthorViewSet(mixins.CreateModelMixin, GenericViewSet):
     """
-                          ^^^^^^^^^^^^^^^^
     Registration ViewSet. Allows only POST
     """
 
@@ -55,14 +53,15 @@ class BookViewSet(ModelViewSet, GenericViewSet):
         This section can be moved inside BookSerializer. Somehow I need to deduce genre object by string not by ID (as in PDF)... // Depends on implementations.
         """
         genre_name = request.data.get("genre", None)
-        if genre_name:
-            genre = models.Genre.objects.filter(name=genre_name).first()
-            if genre:
-                request.data.update({"author": request.user.id, "genre": genre.id})
-                return super().create(request, *args, **kwargs)
-            return Response({"genre": f"{genre_name} not found"}, status=status.HTTP_400_BAD_REQUEST)
-        else:
+        
+        if not genre_name:
             return Response({"genre": "This field is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        genre = models.Genre.objects.filter(name=genre_name).first()
+        if genre:
+            request.data.update({"author": request.user.id, "genre": genre.id})
+            return super().create(request, *args, **kwargs)
+        return Response({"genre": f"{genre_name} not found"}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(
         methods=["post", "get"],
