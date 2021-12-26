@@ -6,14 +6,14 @@ BASE_URL = "http://127.0.0.1:8000/api/"
 
 fake = Faker()
 
-fake_static_username = "TheBigLebowski" + shortuuid.ShortUUID().random(length=8)
-fake_static_password = "super_secure_password1337"
+FAKE_STATIC_USERNAME = "TheBigLebowski" + shortuuid.ShortUUID().random(length=8)
+FAKE_STATIC_PASSWORD = "super_secure_password1337"
 
 
 def get_static_user_profile():
     dude_json = {
-        "username": fake_static_username,
-        "password": fake_static_password,
+        "username": FAKE_STATIC_USERNAME,
+        "password": FAKE_STATIC_PASSWORD,
         "name": "The",
         "last_name": "Dude",
         "birthday": "1998-01-18",

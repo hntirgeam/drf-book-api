@@ -67,7 +67,7 @@ class TestBookView(APITestCase):
         self.assertJSONEqual(response.content, expected_json)
 
     def test_get_books_unauth(self):
-        response = self.anon.get(path=f"/api/books/")
+        response = self.anon.get(path="/api/books/")
         expected_json = {"detail": "Authentication credentials were not provided."}
 
         self.assertEqual(response.status_code, 401)
@@ -83,7 +83,7 @@ class TestBookView(APITestCase):
     def test_create_book_auth(self):
         book_id = models.Book.objects.count() + 1
 
-        response = self.user1_client.post(path=f"/api/books/", data=self.book_data, format="json")
+        response = self.user1_client.post(path="/api/books/", data=self.book_data, format="json")
 
         expected_json = {
             "id": book_id,

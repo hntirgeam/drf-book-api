@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import mixins, status
 from rest_framework.decorators import action
@@ -61,8 +60,7 @@ class BookViewSet(ModelViewSet, GenericViewSet):
             if genre:
                 request.data.update({"author": request.user.id, "genre": genre.id})
                 return super().create(request, *args, **kwargs)
-            else:
-                return Response({"genre": f"{genre_name} not found"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"genre": f"{genre_name} not found"}, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({"genre": "This field is required"}, status=status.HTTP_400_BAD_REQUEST)
 

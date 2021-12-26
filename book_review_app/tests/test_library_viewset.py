@@ -74,7 +74,7 @@ class TestLibraryView(APITestCase):
         self.assertJSONEqual(response.content, expected_json)
 
     def test_retrieve_libraries_unauth(self):
-        response = self.anon.get(path=f"/api/libraries/")
+        response = self.anon.get(path="/api/libraries/")
         expected_json = {"detail": "Authentication credentials were not provided."}
 
         self.assertEqual(response.status_code, 401)
@@ -99,7 +99,7 @@ class TestLibraryView(APITestCase):
             "to_hour": str(self.library_data["to_hour"]),
         }
 
-        response = self.user1_client.post(path=f"/api/libraries/", data=self.library_data, format="json")
+        response = self.user1_client.post(path="/api/libraries/", data=self.library_data, format="json")
 
         self.assertEqual(response.status_code, 201)
         self.assertJSONEqual(response.content, expected_json)
