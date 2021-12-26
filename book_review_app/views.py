@@ -74,8 +74,8 @@ class BookViewSet(ModelViewSet, GenericViewSet):
             comment_serializer = self.get_serializer(data=request.data)
             comment_serializer.is_valid(raise_exception=True)
             comment_serializer.save()
-            return Response(comment_serializer.data)
-            
+            return Response(comment_serializer.data, status.HTTP_201_CREATED)
+        
         if request.method == "GET":
             book = self.get_object()
             book_serializer = serializers.BookSerializer(book)
@@ -84,19 +84,19 @@ class BookViewSet(ModelViewSet, GenericViewSet):
                 **book_serializer.data,
                 "comments": comment_serializer.data
             }
-            return Response(response)
+            return Response(response, status=status.HTTP_200_OK)
 
 
-    @action(methods=["put", "patch", "delete"],  detail=True, url_path="comments/(?P<comment_id>[0-9]+)", permission_classes=[IsAuthenticated, IsAuthorOrReadOnly], serializer_class=serializers.CommentSerializer)
+    @action(methods=["put", "patch", "delete", "get"],  detail=True, url_path="comments/(?P<comment_id>[0-9]+)", permission_classes=[IsAuthenticated, IsAuthorOrReadOnly], serializer_class=serializers.CommentSerializer)
     def edit_or_remove_comment(self, request: Request, pk: int, comment_id: int):
         '''
-        Allows us to edit or delete a comment by URL like /api/books/<pk>/comments/<comment_id>
+        Allows to edit or delete a comment by URL like /api/books/<pk>/comments/<comment_id>
         '''
         if request.method == "DELETE":
             comment = get_object_or_404(models.Comment, id=comment_id)
-            self.check_object_permissions(request, comment) # As I used self.get_object in previous action I can't overload it. But I can check permission anyways
-            # comment.delete()
-            return Response(status.HTTP_200_OK)
+            self.check_object_permissions(request, comment) # As I used self.get_object in previous action I can't overload it. But I can check permission using this method anyways
+            comment.delete()
+            return Response("Comment deleted", status.HTTP_204_NO_CONTENT)
         
         if request.method in ["PUT", "PATCH"]:
             comment = get_object_or_404(models.Comment, id=comment_id)
@@ -104,7 +104,12 @@ class BookViewSet(ModelViewSet, GenericViewSet):
             comment_serializer = self.get_serializer(comment, request.data, partial=True)
             comment_serializer.is_valid()
             comment_serializer.save()
-            return Response(comment_serializer.data)
+            return Response(comment_serializer.data, status.HTTP_200_OK)
+        
+        if request.method == "GET":
+            comment = get_object_or_404(models.Comment, id=comment_id)
+            comment_serializer = self.get_serializer(comment)
+            return Response(comment_serializer.data, status=status.HTTP_200_OK)
             
         
 
@@ -131,8 +136,4 @@ class LibraryViewSet(ModelViewSet, GenericViewSet):
     queryset = models.Library.objects.all()
     serializer_class = serializers.LibrarySerializer
     permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
-    
-# class CommentViewSet(ModelViewSet, GenericViewSet):
-#     queryset = models.Comment.objects.all()
-#     serializer_class = serializers.CommentSerializer
-#     permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
+
