@@ -73,5 +73,5 @@ class LibrarySerializer(serializers.ModelSerializer):
         return library
         
     def get_author(self, obj):
-        return F"{obj.author.last_name} {obj.author.name} {obj.author.middle_name}"
+        return obj.author.id
         
