@@ -1,7 +1,9 @@
-from book_review_app import models
+from datetime import date
+
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
-from datetime import date
+
+from book_review_app import models
 
 
 class AuthorSerializer(serializers.ModelSerializer):

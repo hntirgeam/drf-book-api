@@ -1,10 +1,12 @@
-from django.core.management.base import BaseCommand, CommandParser
-from book_review_app.models import AuthorUser, Book, Comment, Genre, Library
-from rest_framework.authtoken.models import Token
-from faker import Faker
 import random
+
+from django.core.management.base import BaseCommand, CommandParser
+from faker import Faker
+from rest_framework.authtoken.models import Token
 from tqdm import tqdm
+
 from book_review_app import utils
+from book_review_app.models import AuthorUser, Book, Comment, Genre, Library
 
 fake = Faker()
 

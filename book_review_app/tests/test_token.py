@@ -1,7 +1,6 @@
 import requests
-from faker import Faker
 import shortuuid
-
+from faker import Faker
 
 BASE_URL = "http://127.0.0.1:8000/api/"
 

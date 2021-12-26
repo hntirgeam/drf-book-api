@@ -1,6 +1,7 @@
-from django.db import models
 from decimal import Decimal
+
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 from django.db.models.deletion import CASCADE, PROTECT
 from django.utils import timezone
 

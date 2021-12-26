@@ -1,17 +1,17 @@
-from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import response
-from rest_framework.generics import get_object_or_404
-from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework import mixins, status
 from rest_framework.decorators import action
-from rest_framework.request import Request
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
-from rest_framework import mixins
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from book_review_app.permissions import IsAuthorOrReadOnly, IsAdminOrReadOnly, IsOwnProfileOrReadOnly
-from rest_framework import status
+from rest_framework.request import Request
 from rest_framework.response import Response
-from book_review_app import serializers, models
+from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
+
+from book_review_app import models, serializers
+from book_review_app.permissions import (IsAdminOrReadOnly, IsAuthorOrReadOnly,
+                                         IsOwnProfileOrReadOnly)
 
 
 class LogoutView(APIView):

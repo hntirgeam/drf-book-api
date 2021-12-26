@@ -1,10 +1,12 @@
+import random
+from datetime import datetime
+
+import shortuuid
+from django.utils import timezone
+from faker import Faker
+
 from book_review_app import models
 from book_review_app.models import Genre
-import shortuuid
-from faker import Faker
-import random
-from django.utils import timezone
-from datetime import datetime
 
 fake = Faker()
 

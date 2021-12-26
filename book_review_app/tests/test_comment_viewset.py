@@ -1,13 +1,8 @@
-from model_bakery import baker
-
-from rest_framework.test import APIClient, APITestCase
-from book_review_app import models
-from model_bakery import baker
-from pprint import pp
-from django.utils import timezone
 import random
-from datetime import datetime
-import pytz
+from model_bakery import baker
+from rest_framework.test import APIClient, APITestCase
+
+from book_review_app import models
 
 
 class TestCommentsView(APITestCase):
