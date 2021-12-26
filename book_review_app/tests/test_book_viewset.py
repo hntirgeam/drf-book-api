@@ -132,3 +132,11 @@ class TestBookView(APITestCase):
 
         self.assertEqual(response.status_code, 403)
         self.assertJSONEqual(response.content, expected_json)
+        
+    def test_user_tries_post_on_detailview(self):
+        expected_json = {"detail": 'Method "POST" not allowed.'}
+        response = self.user1_client.post(path="/api/books/1/", data=self.book_data, format="json")
+
+        self.assertEqual(response.status_code, 405)
+        self.assertJSONEqual(response.content, expected_json)
+        
