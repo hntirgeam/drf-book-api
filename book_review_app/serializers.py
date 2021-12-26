@@ -49,7 +49,7 @@ class CommentSerializer(serializers.ModelSerializer):
     
 
 class BookSerializer(serializers.ModelSerializer):
-    comments = CommentSerializer(many=True)
+    comments = CommentSerializer(many=True, required=False)
     class Meta:
         model = models.Book
         fields = ['id', 'title', 'year', 'author', 'genre', 'publication_date', 'comments']
