@@ -79,7 +79,7 @@ class TestAuthorView(APITestCase):
 
         user = models.AuthorUser.objects.get(id=self.user1.id)
         self.assertEqual(patch_data["name"], user.name)
-        
+
     def test_user_tries_post_on_detailview(self):
         expected_json = {"detail": 'Method "POST" not allowed.'}
         response = self.user1_client.post(path=f"/api/authors/{self.user1.id}/")
