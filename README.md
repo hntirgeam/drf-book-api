@@ -18,7 +18,7 @@ pip install -r requirements.txt
 
 ## Примените миграции и запустите сервер
 ```
-python manage.py makemigrations
+python manage.py makemigrations book_review_app
 python manage.py migrate
 python manage.py runserver
 ```
@@ -36,7 +36,9 @@ manage.py createusers --users <кол-во юзеров> --books <кол-во к
 ```
 Будет создано X авторов с Y книгами у каждого. Для каждой книги от каждого автора (кроме самого создателя книги) будет создано по Z комментариев. 
 
-Процесс ожидания скрасит ascii графика :) 
+Процесс ожидания скрасит ascii графика
+![alt text](https://user-images.githubusercontent.com/56179857/147412418-54653692-fec3-49ec-a858-d1604ad2d54f.png)
+
 
 ## Endpoints
 | URL                               | Method                    | Accepts                                                   | Returns                          | 
@@ -52,3 +54,7 @@ manage.py createusers --users <кол-во юзеров> --books <кол-во к
 |`api/genres/`                      | GET                       |  Headers                                                  |  Жанры                           |
 |`api/libraries/`                   | GET, POST                 |  Data + Headers                                           |  Библиотеки или созданные данные |
 |`api/libraries/<pk>/`              | GET, PATCH, DELETE        |  Data + Headers                                           |  Библиотеку, ред. данные, 204    |
+
+<p align="center">
+  <img width="460" height="400" src="https://user-images.githubusercontent.com/56179857/147412299-500b6952-7462-41cf-ae0d-5260464ba977.jpg">
+</p>
