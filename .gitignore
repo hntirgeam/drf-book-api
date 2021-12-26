@@ -6,3 +6,6 @@ book_review_app/migrations
 __pycache__/
 
 pg.py 
+
+# I was using sqlitebrowser...
+nohup.out 
