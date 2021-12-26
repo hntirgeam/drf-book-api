@@ -10,10 +10,10 @@ class TestBookView(APITestCase):
         self.user1 = baker.make(models.AuthorUser)
         self.user2 = baker.make(models.AuthorUser)
 
-        genres = baker.make(models.Genre, _quantity=5)
+        self.genres = baker.make(models.Genre, _quantity=5)
 
-        self.book1 = baker.make(models.Book, author=self.user1, genre=random.choice(genres))
-        self.book2 = baker.make(models.Book, author=self.user2, genre=random.choice(genres))
+        self.book1 = baker.make(models.Book, author=self.user1, genre=random.choice(self.genres))
+        self.book2 = baker.make(models.Book, author=self.user2, genre=random.choice(self.genres))
 
         self.user1_client = APIClient()
         self.user2_client = APIClient()
@@ -22,7 +22,7 @@ class TestBookView(APITestCase):
         self.user1_client.force_authenticate(user=self.user1)
         self.user2_client.force_authenticate(user=self.user2)
 
-        self.book_data = {"title": "Вам и не снилось", "year": 1984, "genre": random.choice([i.name for i in genres])}
+        self.book_data = {"title": "Вам и не снилось", "year": 1984, "genre": random.choice([i.name for i in self.genres])}
 
     def test_get_books_auth(self):
         response = self.user1_client.get(path="/api/books/")
@@ -98,6 +98,14 @@ class TestBookView(APITestCase):
         self.assertEqual(response.status_code, 201)
         self.assertJSONEqual(response.content, expected_json)
 
+    def test_create_book_auth_wrong_year(self):
+        expected_json = {"year": ["Incorrect year"]}
+        data = {"title": "Вам и не снилось", "year": -1, "genre": random.choice([i.name for i in self.genres])}
+        response = self.user1_client.post(path="/api/books/", data=data, format="json")
+
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(response.content, expected_json)
+
     def test_user_tries_patch_his_book_data(self):
         patch_data = {"title": "War and Peace"}
         response = self.user1_client.patch(path=f"/api/books/{self.book1.id}/", data=patch_data, format="json")
@@ -132,11 +140,10 @@ class TestBookView(APITestCase):
 
         self.assertEqual(response.status_code, 403)
         self.assertJSONEqual(response.content, expected_json)
-        
+
     def test_user_tries_post_on_detailview(self):
         expected_json = {"detail": 'Method "POST" not allowed.'}
         response = self.user1_client.post(path="/api/books/1/", data=self.book_data, format="json")
 
         self.assertEqual(response.status_code, 405)
         self.assertJSONEqual(response.content, expected_json)
-        
