@@ -97,7 +97,7 @@ class TestBookView(APITestCase):
         response = self.user1_client.post(path=f"/api/books/", data=self.book_data, format="json")
         
         expected_json = {
-            "id": book_id, # first 2 was created in setUp func
+            "id": book_id,
             "title": self.book_data["title"],
             "year": self.book_data["year"],
             "author": self.book1.author.id,
