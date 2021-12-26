@@ -1,11 +1,6 @@
-from django.http import response
 from model_bakery import baker
-import factory
-import json
-import pytest
 
 from rest_framework.test import APIClient, APITestCase
-from django.test import TestCase
 from book_review_app import models
 from model_bakery import baker
 from pprint import pp
@@ -28,6 +23,7 @@ class TestAuthorView(APITestCase):
         res_json = response.json()[0]
 
         self.assertEqual(response.status_code, 200)
+        self.assertIn("id", res_json)
         self.assertIn("name", res_json)
         self.assertIn("last_name", res_json)
         self.assertIn("middle_name", res_json)
@@ -77,11 +73,14 @@ class TestAuthorView(APITestCase):
         self.assertJSONEqual(response.content, expected_json)
 
     def test_user_tries_patch_his_data(self):
-        data = {"name": "Alexander"}
-        response = self.user1_client.patch(path=f"/api/authors/{self.user1.id}/", data=data, format="json")
+        patch_data = {"name": "Alexander"}
+        response = self.user1_client.patch(path=f"/api/authors/{self.user1.id}/", data=patch_data, format="json")
         
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(data["name"], response.json()["name"])
+        self.assertEqual(patch_data["name"], response.json()["name"])
+        
+        user = models.AuthorUser.objects.get(id=self.user1.id)
+        self.assertEqual(patch_data["name"], user.name)
         
         
     def test_user_tries_patch_others_data(self):
@@ -92,6 +91,9 @@ class TestAuthorView(APITestCase):
         
         self.assertEqual(response.status_code, 403)
         self.assertJSONEqual(response.content, expected_json)
+        
+        user2 = models.AuthorUser.objects.get(id=self.user2.id)
+        self.assertNotEqual(patch_data["name"], user2.name)
         
     def test_user_tries_delete_profile(self):
         expected_json = {'detail': 'Method "DELETE" not allowed.'}
